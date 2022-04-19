@@ -11,7 +11,7 @@ COPY . ./
 RUN ls -la $APP_HOME/
 
 # Install dependencies
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Run the streamlit on container startup
 CMD [ "streamlit", "run","--server.enableCORS","false","imgwebapp.py" ]
