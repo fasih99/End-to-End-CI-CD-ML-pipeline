@@ -3,10 +3,8 @@ numpy
 requests
 tensorflow==2.5.0
 fastapi
-
 python-multipart
 pillow
-
 matplotlib
 numpy
 
