@@ -1,41 +1,50 @@
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
-import tensorflow as tf
+from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 import numpy as np
-import streamlit as st
-from PIL import Image
-import requests
 from io import BytesIO
+from PIL import Image
+import tensorflow as tf
 
-st.set_option('deprecation.showfileUploaderEncoding', False)
-st.title("Potato Leaf Disease Classifier")
-st.text("Provide URL of potato leaf Image for image classification")
+app = FastAPI()
 
-@st.cache(allow_output_mutation=True)
-def load_model():
-  model = tf.keras.models.load_model('/app/models/1/')
-  return model
+origins = [
+    "*",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-with st.spinner('Loading Model Into Memory....'):
-  model = load_model()
+MODEL = tf.keras.models.load_model("/app/models/2/")
 
-classes=['Potato__Early_blight','Potato__healthy','Potato__Late_blight']
+CLASS_NAMES = ["Potato Early Blight", "Potato Late Blight", "Potato Healthy"]
 
-def decode_img(image):
-  img = tf.image.decode_jpeg(image, channels=3)  
-  img = tf.image.resize(img,[256,256])
-  return np.expand_dims(img, axis=0)
+@app.get("/ping")
+async def ping():
+    return "Hello, I am alive"
 
-path = st.text_input('Enter Image URL to Classify.. ','https://img2.lrgarden.com/feed_pic/122/13/1000333946_1000013406_1505279245.jpg')
-if path is not None:
-    content = requests.get(path).content
+def read_file_as_image(data) -> np.ndarray:
+    image = np.array(Image.open(BytesIO(data)))
+    return image
 
-    st.write("Predicted Class :")
-    with st.spinner('classifying.....'):
-      label =np.argmax(model.predict(decode_img(content)),axis=1)
-      st.write(classes[label[0]])    
-    st.write("")
-    image = Image.open(BytesIO(content))
-    st.image(image, caption='Classifying Potato Leaf Diseases', use_column_width=True)
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    image = read_file_as_image(await file.read())
+    img_batch = np.expand_dims(image, 0)
+    
+    predictions = MODEL.predict(img_batch)
 
+    predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+    confidence = np.max(predictions[0])
+    return {
+        'class': predicted_class,
+        'confidence': float(confidence)
+    }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host='localhost', port=8007)
+      
