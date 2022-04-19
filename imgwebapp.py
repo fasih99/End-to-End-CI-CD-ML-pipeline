@@ -20,7 +20,7 @@ def load_model():
 with st.spinner('Loading Model Into Memory....'):
   model = load_model()
 
-classes=['Potato__Early_Blight','Potato__Late_Blight','Potato__Healthy']
+classes=['Potato__Early_Blight','Potato__Healthy','Potato__Late_Blight']
 
 def decode_img(image):
   img = tf.image.decode_jpeg(image, channels=3)  
