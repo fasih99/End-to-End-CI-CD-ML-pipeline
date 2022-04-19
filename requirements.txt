@@ -1,7 +1,13 @@
-tensorflow
-streamlit
 pillow
 numpy
 requests
+tensorflow==2.5.0
+fastapi
+uvicorn
+python-multipart
+pillow
+tensorflow-serving-api==2.5.0
+matplotlib
+numpy
 
 #Run this file with - pip3 install -r requirements.txt
