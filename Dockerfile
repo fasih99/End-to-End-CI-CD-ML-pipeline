@@ -14,4 +14,4 @@ RUN ls -la $APP_HOME/
 RUN pip install -r requirements.txt
 
 # Run the streamlit on container startup
-CMD [ "streamlit", "run","--server.enableCORS","false","imgwebapp.py" ]
+CMD ["uvicorn", "imagewebapp.py:app", "--host", "0.0.0.0", "--port", "80"]
