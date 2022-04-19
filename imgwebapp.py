@@ -9,12 +9,12 @@ import requests
 from io import BytesIO
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
-st.title("Potato Leaf Disease Classifier")
+st.title("Potato Leaf Disease Classifier V2")
 st.text("Provide URL of potato leaf Image for image classification")
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-  model = tf.keras.models.load_model('/app/models/1/')
+  model = tf.keras.models.load_model('/app/models/2/')
   return model
 
 with st.spinner('Loading Model Into Memory....'):
