@@ -1,3 +1,4 @@
+from turtle import width
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -9,32 +10,43 @@ import requests
 from io import BytesIO
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
-st.title("Potato Leaf Disease Classifier V2")
-st.text("Provide URL of potato leaf Image for image classification")
+st.title("Potato Image Classifier")
+st.text("Provide an image of Potato Leaf")
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-  model = tf.keras.models.load_model('/app/models/2/')
+  model = tf.keras.models.load_model('/Users/fasihussaini/Desktop/PlantDiseaseClassifierDemo/models/1')
   return model
 
 with st.spinner('Loading Model Into Memory....'):
   model = load_model()
 
-classes=['Potato__Early_Blight','Potato__Late_Blight','Potato Healthy']
+classes=['Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy']
 
-def decode_img(image):
-  img = tf.image.decode_jpeg(image, channels=3)  
-  img = tf.image.resize(img,[256,256])
-  return np.expand_dims(img, axis=0)
 
-path = st.text_input('Enter Image URL to Classify.. ','https://img2.lrgarden.com/feed_pic/122/13/1000333946_1000013406_1505279245.jpg')
-if path is not None:
-    content = requests.get(path).content
+file= st.file_uploader("Upload Images", type=["png","jpg","jpeg"])
+if file is not None:
 
+    image= Image.open(file)
+    
+    img_array = np.array(image)
+    
+    img_tensor = tf.cast(img_array, tf.float32)
+    img = tf.image.resize(img_tensor,[256,256])
+    img = np.expand_dims(img, axis = 0)
+    
     st.write("Predicted Class :")
     with st.spinner('classifying.....'):
-      label =np.argmax(model.predict(decode_img(content)),axis=1)
-      st.write(classes[label[0]])    
+      pred = model.predict(img)
+      
+      label =np.argmax(pred,axis=1)
+      
+      confidence = "{:.2f}".format(100*np.max(pred))
+      
+      st.write(classes[label[0]]) 
+      
+      st.write("Confidence :", confidence) 
     st.write("")
-    image = Image.open(BytesIO(content))
-    st.image(image, caption='Classifying Potato Leaf Diseases', use_column_width=True)
+    image = Image.open(file)
+    st.image(image, caption='Classifying Potato Image', width=400)
+
