@@ -1,6 +1,4 @@
-from turtle import width
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 import tensorflow as tf
 import numpy as np
