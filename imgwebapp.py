@@ -22,7 +22,7 @@ choice = st.sidebar.selectbox("Menu",menu)
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-  model = tf.keras.models.load_model('/Users/fasihussaini/Desktop/PlantDiseaseClassifierDemo/models/1')
+  model = tf.keras.models.load_model('/app/models/1')
   return model
 
 with st.spinner('Loading Model Into Memory....'):
