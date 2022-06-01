@@ -8,6 +8,8 @@ pillow
 matplotlib
 numpy
 streamlit==1.9.0
+protobuf~=3.19.0
+
 
 
 #Run this file with - pip3 install -r requirements.txt
