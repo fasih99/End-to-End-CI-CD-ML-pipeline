@@ -2,14 +2,12 @@ pillow
 numpy
 requests
 tensorflow==2.8.0
-fastapi
 python-multipart
 pillow
 matplotlib
 numpy
 streamlit==1.9.0
-protobuf~=3.19.0
-streamlit-bokeh-events==0.1.2
+
 
 
 
